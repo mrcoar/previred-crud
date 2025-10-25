@@ -1,0 +1,32 @@
+# UserCrudAppBackend (Spring Boot/Maven/Gradle)
+/UserCrudAppBackend/target/
+/UserCrudAppBackend/build/
+/UserCrudAppBackend/*.jar
+/UserCrudAppBackend/*.war
+/UserCrudAppBackend/.mvn/
+/UserCrudAppBackend/mvnw
+/UserCrudAppBackend/mvnw.cmd
+/UserCrudAppBackend/gradle/
+/UserCrudAppBackend/gradlew
+/UserCrudAppBackend/gradlew.bat
+
+# user-crud-app-frontend (React/Vite/Node)
+/user-crud-app-frontend/node_modules/
+/user-crud-app-frontend/build/
+/user-crud-app-frontend/dist/
+/user-crud-app-frontend/.env.local
+/user-crud-app-frontend/.env.development.local
+/user-crud-app-frontend/.env.production.local
+
+# IDE/Editor
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log

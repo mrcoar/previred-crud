@@ -1,0 +1,8 @@
+CREATE TABLE USUARIO(
+    rut VARCHAR(10) PRIMARY KEY NOT NULL,
+    nombre VARCHAR(20) NOT NULL,
+    apellido VARCHAR(20) NOT NULL,
+    fecha_nacimiento DATE NOT NULL,
+    calle VARCHAR(50) NOT NULL,
+    comuna INTEGER NOT NULL
+);

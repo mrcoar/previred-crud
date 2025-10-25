@@ -1,0 +1,63 @@
+
+plugins {
+    id 'java'
+    id 'maven-publish'
+    id 'org.springframework.boot' version '3.5.6'
+    id 'io.spring.dependency-management' version '1.1.7'
+    id 'pmd'
+    id 'org.sonarqube' version '4.3.1.3277'
+}
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(22)
+    }
+}
+group = "cl.maraneda"
+version = "1.0-SNAPSHOT"
+description = 'Desafio de programacion para la empresa Previred'
+
+sourceSets {
+    main {
+        resources {
+            srcDirs = ['src/main/resources']  // Explicitly include resources
+            include '**/*.sql'  // Ensure SQL files are copied
+        }
+    }
+}
+
+repositories {
+    mavenLocal()
+    maven {
+        url = uri('https://repo.maven.apache.org/maven2/')
+    }
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    compileOnly 'org.projectlombok:lombok'
+    runtimeOnly 'com.h2database:h2:2.2.220'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    implementation 'org.flywaydb:flyway-core:10.0.0'
+    implementation 'org.modelmapper:modelmapper:2.4.4'
+}
+
+test {
+    useJUnitPlatform()
+    ignoreFailures true
+    testLogging {
+        minGranularity = 3
+        exceptionFormat = 'full'
+        events = ['passed', 'failed', 'skipped']
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+tasks.test {
+    useJUnitPlatform()
+}

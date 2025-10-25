@@ -1,0 +1,37 @@
+spring:
+  jmx:
+    enabled: false
+  main:
+    lazy-initialization: true
+  datasource:
+    url: jdbc:h2:file:~/users;NON_KEYWORDS=user;REFERENTIAL_INTEGRITY=false;DB_CLOSE_DELAY=-1;AUTOCOMMIT=on
+    driverClassName: org.h2.Driver
+    username: sa
+    password: completo
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: none
+    show-sql: true  # Log SQL for debug
+    properties:
+        hibernate:
+          format_sql: true  # Pretty-print SQL logs
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  flyway:
+    enabled: true
+    user: sa
+    password: completo
+    schema: users
+    baseline-on-migrate: false
+    validate-on-migrate: true  # Fail on syntax errors
+    out-of-order: true  # Run if versions out of order
+    locations:
+      - classpath:db/migration
+  logging:
+    level:
+      org.flywaydb: DEBUG  # Log Flyway execution
+      org.hibernate.SQL: DEBUG  # Log SQL
+      org.hibernate.type.descriptor.sql: TRACE  # Logs params (RUTs, IDs)

@@ -1,0 +1,5 @@
+CREATE TABLE comuna(
+    id INTEGER PRIMARY KEY NOT NULL,
+    nombre VARCHAR(50) NOT NULL,
+    region_id VARCHAR(8) NOT NULL
+);
