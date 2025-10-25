@@ -43,17 +43,39 @@ export const UserList: React.FC<UserListProps> = ({ users, onEdit, onDelete, loa
   return (
     <div className="user-list">
       <h2>Lista de usuarios</h2>
-      <ul>
-        {users.map((user, index) => (  // Add index fallback
-          <li key={user.rut || index} className="user-item">
-            <div><strong>{user.nombre} {user.apellido}</strong> - Fecha de Nacimiento: {user.fechaNacimiento}</div>
-            <div>Dirección: {user.calle}</div>
-            <div>Región: {getRegionName(user.region)} | Comuna: {getComunaName(user.region, user.comuna)}</div>
-            <button onClick={() => onEdit(user)}>Edit</button>
-            <button onClick={() => onDelete(user.rut)}>Delete</button>
-          </li>
-        ))}
-      </ul>
+      <div className="table-container">
+        <table className="users-table">
+          <thead>
+            <tr>
+              <th>RUT</th>
+              <th>Nombre</th>
+              <th>Apellido</th>
+              <th>Fecha de Nacimiento</th>
+              <th>Calle</th>
+              <th>Región</th>
+              <th>Comuna</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {users.map((user, index) => (
+              <tr key={user.rut || index} className="user-item">
+                <td>{user.rut}</td>
+                <td>{user.nombre}</td>
+                <td>{user.apellido}</td>
+                <td>{user.fechaNacimiento}</td>
+                <td>{user.calle}</td>
+                <td>{getRegionName(user.region)}</td>
+                <td>{getComunaName(user.region, user.comuna)}</td>
+                <td>
+                  <button onClick={() => onEdit(user)} className="edit-btn">Edit</button>
+                  <button onClick={() => onDelete(user.rut)} className="delete-btn">Delete</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
