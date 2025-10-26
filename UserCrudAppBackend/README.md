@@ -55,11 +55,13 @@ Esto no solo mantendrá la aplicación Spring Boot "stand-by" esperando que sus 
 
 ## API-REST definidos
 
-El backend define los siguientes API-REST
+El backend define los siguientes API-REST (*Nota: La descripción de la salida para cada uno código consiste en un código HTTP y descripción, asumiendo que no hay problemas de conexión ni errores internos*)
 
 ### $${\color{brown}GET}$$ localhost:8080/previred/region
 
-Permite obtener todas las regiones ordenadas geográficamente. API-REST utilizado para poblar el ```<select>``` de las regiones en el frontend
+Permite obtener todas las regiones ordenadas geográficamente de norte a sur. API-REST utilizado para poblar el ```<select>``` de las regiones en el frontend
+
+**Salida**: HTTP 200. Se obtienen todas las regiones (id y nombre) en formato JSON.
 
 ### $${\color{brown}GET}$$ localhost:8080/previred/comuna/porRegion/{regionId}
 
@@ -67,10 +69,18 @@ Permite obtener todas las comunas asociadas a una región específica en orden a
 El valor de regionId debe ser el número de la región en latín (ej. I para Región de Tarapacá, RM para Región Metropolitana, XIII para Región de Arica y Parinacota, etc.)
 API-REST utilizado para poblar el ```<select>``` de las comunas en el frontend dependiendo del valor seleccionado de la región
 
+**Salidas**
+* HTTP 200. Si la región ingresada es válida, se obtienen todas las comunas asociadas a la región
+* HTTP 204. Si la región ingresada no es válida, no se obtienen comunas.
+  
 ### $${\color{brown}GET}$$ localhost:8080/previred/comuna/regionDeComuna/{comunaId}
 
 Permite obtener la región a la que pertenece la comuna especificada por su id. El ID debe ser un número entre 1 y 346. Revise [el archivo .sql que carga las comunas](./src/main/resources/db/migration/V004__insert_into_comuna.sql) para la lista de comunas y la ID asociada a cada una. 
 
+**Salidas**
+* HTTP 200. Si la id de la comuna ingresada es válida, se obtiene la región asociada.
+* HTTP 404. Si la id de la comuna ingresada no es válida, se obtiene un mensaje de error.
+  
 ### $${\color{green}POST}$$ localhost:8080/previred/user/search
 
 Permite buscar usuarios mediante un criterio especificado en el cuerpo de entrada definido al llamar a esta API-REST
@@ -86,11 +96,53 @@ El cuerpo de entrada debe ser un texto en formato JSON conteniendo las siguiente
   * POR_RUT: Buscar por el RUT del usuario. El resultado siempre tendrá un usuario como máximo.
   * POR_NOMBRE: Buscar por el nombre del usuario.
   * POR_APELLIDO: Buscar por el apellido del usuario.
- * POR_NOMBRE_COMPLETO: Buscar por el nombre y el apellido.
- * POR_REGION: Buscar por la región.
- * POR_COMUNA: Buscar por la comuna.
+  * POR_NOMBRE_COMPLETO: Buscar por el nombre y el apellido.
+  * POR_REGION: Buscar por la región.
+  * POR_COMUNA: Buscar por la comuna.
 
+**Salidas**
+* HTTP 200.
+  * Si el valor de criteria es TODOS y existe al menos un usuario, se obtienen todos los usuarios.
+  * Si el valor de criteria es distinto de TODOS y el valor requerido dependiendo del de criteria es ingresado y existe al menos un usuario que cumpla con ese criterio, se obtienen todos los usuarios que cumplan con el criterio.
+* HTTP 404. Si no existen o no se encontraron usuarios, con o sin el criterio especificado. Esta salida también se puede obtener si el valor de criteria es POR_REGION o POR_COMUNA y se ingresó una ID inválida de región o comuna.
+* HTTP 400
+  * Si el valor de criteria es POR_RUT y se ingresó un RUT inválido
+  * Si el valor de criteria es POR_REGION o POR_COMUNA y se ingresó un cero (0)
+  * Si el valor de criteria es distinto de TODOS y no se ingresó el valor requerido dependiendo de criteria.
 
+### $${\color{blue}PUT}$$ localhost:8080/previred/user/
+
+Permite crear un usuario y agregarlo a la base de datos con la información proporcionada en el cuerpo de entrada, que debe ser un texto en formato JSON con los siguientes campos, todos obligatorios:
+
+rut: El Rol Único Tributario asociado al usuario. Cada RUT es único, por lo que si se intenta crear un usuario con un RUT ya existente, se obtendrá un error.
+nombre: El nombre del usuario
+apellido: El apellido del usuario
+fechaNacimiento: La fecha de nacimiento del usuario en formato AAAA-MM-DD
+calle: La calle donde vive el usuario
+comuna: La comuna dentro de la cuál se encuentra la calle.
+
+**Salidas**
+* HTTP 201: Si se ingresaron los datos correctamente, se obtiene un mensaje de éxito indicando que el usuario fue creado.
+* HTTP 400: Si no se ingresaron todos los datos correctamente, se obtiene un mensaje de error.
+* HTTP 403: Si se ingresaron los datos correctamente, pero el rut ya existe en la base de datos, se obtiene un mensaje de error.
+
+### $${\color{blue}PUT}$$ localhost:8080/previred/user/{rut}
+
+Actualiza un usuario existente con la información proporcionada por el cuerpo de entrada, cuya composición debe ser igual que en el API-REST anterior, pero sin el campo rut, ya que éste irá en la URL en vez del cuerpo.
+
+**Salidas**
+* HTTP 201: Si se ingresaron los datos correctamente, se obtiene un mensaje de éxito indicando que el usuario fue actualizado.
+* HTTP 400: Si no se ingresaron todos los datos correctamente, se obtiene un mensaje de error.
+* HTTP 404: Si se ingresaron los datos correctamente, pero el rut no existe en la base de datos, se obtiene un mensaje de error.
+
+### $${\color{blue}DELETE}$$ localhost:8080/previred/user/{rut}
+
+Borra un usuario existente especificado por el rut.
+
+**Salidas**
+* HTTP 200: Si se ingresó un rut válido y el usuario asociado al rut existía en la base de datos, se obtiene un mensaje de éxito indicando que el usuario fue eliminado.
+* HTTP 400: Si no se ingresó un rut o si el rut ingresado es inválido, se obtiene un mensaje de error.
+* HTTP 404: Si se ingresó un rut válido, pero el usuario asociado al rut no existe en la base de datos, se obtiene un mensaje de error.
 ## Cambio de motor de base de datos
 Si usted desea dejar de usar H2 y empezar a usar una base de datos persistente, como MySQL, siga los siguientes pasos (**sólo si usted sabe lo que hace**)
 
