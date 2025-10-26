@@ -10,6 +10,9 @@ Además de los supuestos genéricos del proyecto, el backend opera bajo los sigu
 * La base de datos con la que se trabajará es un motor [H2](https://www.h2database.com/html/main.html) "en memoria". Esto significa que la base de datos y todos los datos que contiene estarán disponibles mientras la aplicación esté activa. Si por alguna razón (programada o no), la aplicación deja de funcionar, la base de datos dejará de estar disponible y todos los datos guardados en ella se perderán.
 * El backend debe contar con pruebas de integración para corroborar no solo que las llamadas a los API-REST hagan lo que deban, sino que también no hagan lo que no deban.
 * Debido a que el frontend debe usar un framework basado en TypeScript (véase el [README.md](../user-crud-app-frontend/README.md) para el frontend), el backend debe tener habilitado CORS (Compartimiento de recursos de origen cruzado, refiérase [aquí](https://es.wikipedia.org/wiki/Intercambio_de_recursos_de_origen_cruzado) para más detalles.
+* Se buscan usuarios por un criterio específico escogido por la persona que interactua con el frontend.
+* Dependiendo del criterio especificado, se busca usuarior por **expresión exacta** (Por ejemplo, si se especifica una búsqueda de usuarios por nombre y se ingresa la palabra "Luis", se buscarán todos los usuarios cuyo nombre exacto sea "Luis")
+* Se asumen puertos por defecto para la conexión a la base de datos, al frontend y al backend.
 
 ##Instalación
 
@@ -49,6 +52,44 @@ Para ejecutar la aplicación, diríjase, desde línea de comandos, al directorio
 * EN UNIX: <ruta_jdk_22>/bin/java -jar UserCrudAppBackend-1.0-SNAPSHOT.jar
 
 Esto no solo mantendrá la aplicación Spring Boot "stand-by" esperando que sus API-REST sean invocados, sino que también levantará la base de datos. Además, si es primera vez que se ejecuta, una vez levantada la base de datos, se ejecutarán los scripts SQL que están dentro de la aplicación de manera automática.
+
+## API-REST definidos
+
+El backend define los siguientes API-REST
+
+### $${\color{brown}GET}$$ localhost:8080/previred/region
+
+Permite obtener todas las regiones ordenadas geográficamente. API-REST utilizado para poblar el ```<select>``` de las regiones en el frontend
+
+### $${\color{brown}GET}$$ localhost:8080/previred/comuna/porRegion/{regionId}
+
+Permite obtener todas las comunas asociadas a una región específica en orden alfabético. 
+El valor de regionId debe ser el número de la región en latín (ej. I para Región de Tarapacá, RM para Región Metropolitana, XIII para Región de Arica y Parinacota, etc.)
+API-REST utilizado para poblar el ```<select>``` de las comunas en el frontend dependiendo del valor seleccionado de la región
+
+### $${\color{brown}GET}$$ localhost:8080/previred/comuna/regionDeComuna/{comunaId}
+
+Permite obtener la región a la que pertenece la comuna especificada por su id. El ID debe ser un número entre 1 y 346. Revise [el archivo .sql que carga las comunas](./src/main/resources/db/migration/V004__insert_into_comuna.sql) para la lista de comunas y la ID asociada a cada una. 
+
+### $${\color{green}POST}$$ localhost:8080/previred/user/search
+
+Permite buscar usuarios mediante un criterio especificado en el cuerpo de entrada definido al llamar a esta API-REST
+El cuerpo de entrada debe ser un texto en formato JSON conteniendo las siguientes claves con su valor:
+
+* rut: RUT del usuario a buscar. Ignorado a menos que el criterio especificado obligue a incluirlo. Véase "criteria" para más detalles.
+* nombre: Nombre del usuario a buscar. Ignorado a menos que el criterio especificado obligue a incluirlo. Véase "criteria" para más detalles.
+* apellido: Apellido paterno del usuario a buscar. Ignorado a menos que el criterio especificado obligue a incluirlo. Véase "criteria" para más detalles.
+* comuna: ID de la comuna (véase el API-REST anterior para más detalles) deseada con usuarios. Ignorada a menos que el criterio especificado obligue a incluirlo. Véase "criteria" para más detalles. 
+* region: ID de la region (véase el API-REST anterior para más detalles) deseada con usuarios. Ignorado a menos que el criterio especificado obligue a incluirlo. Véase "criteria" para más detalles.
+* criteria: El criterio especificado para buscar usuarios. Es obligatorio y debe tener uno, y solo uno, de los siguientes valores:
+  * TODOS: Buscar usuarios sin restricción
+  * POR_RUT: Buscar por el RUT del usuario. El resultado siempre tendrá un usuario como máximo.
+  * POR_NOMBRE: Buscar por el nombre del usuario.
+  * POR_APELLIDO: Buscar por el apellido del usuario.
+ * POR_NOMBRE_COMPLETO: Buscar por el nombre y el apellido.
+ * POR_REGION: Buscar por la región.
+ * POR_COMUNA: Buscar por la comuna.
+
 
 ## Cambio de motor de base de datos
 Si usted desea dejar de usar H2 y empezar a usar una base de datos persistente, como MySQL, siga los siguientes pasos (**sólo si usted sabe lo que hace**)
