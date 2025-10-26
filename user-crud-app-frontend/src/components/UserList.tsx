@@ -58,7 +58,7 @@ export const UserList: React.FC<UserListProps> = ({ users, onEdit, onDelete, loa
             </tr>
           </thead>
           <tbody>
-            {users.map((user, index) => (
+            {users.filter(user => user.rut != null && user.rut !== undefined).map((user, index) => (
               <tr key={user.rut || index} className="user-item">
                 <td>{user.rut}</td>
                 <td>{user.nombre}</td>
