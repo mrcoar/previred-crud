@@ -9,7 +9,7 @@ Además de los supuestos genéricos del proyecto, el backend opera bajo los sigu
 
 * La base de datos con la que se trabajará es un motor [H2](https://www.h2database.com/html/main.html) "en memoria". Esto significa que la base de datos y todos los datos que contiene estarán disponibles mientras la aplicación esté activa. Si por alguna razón (programada o no), la aplicación deja de funcionar, la base de datos dejará de estar disponible y todos los datos guardados en ella se perderán.
 * El backend debe contar con pruebas de integración para corroborar no solo que las llamadas a los API-REST hagan lo que deban, sino que también no hagan lo que no deban.
-* Debido a que el frontend debe usar un framework basado en TypeScript (véase el README.md para el frontend), el backend debe tener habilitado CORS (Compartimiento de recursos de origen cruzado, refiérase [aquí](https://es.wikipedia.org/wiki/Intercambio_de_recursos_de_origen_cruzado) para más detalles.
+* Debido a que el frontend debe usar un framework basado en TypeScript (véase el [README.md](../user-crud-app-frontend/README.md) para el frontend), el backend debe tener habilitado CORS (Compartimiento de recursos de origen cruzado, refiérase [aquí](https://es.wikipedia.org/wiki/Intercambio_de_recursos_de_origen_cruzado) para más detalles.
 
 ##Instalación
 
