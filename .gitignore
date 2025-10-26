@@ -6,9 +6,6 @@
 /UserCrudAppBackend/.mvn/
 /UserCrudAppBackend/mvnw
 /UserCrudAppBackend/mvnw.cmd
-/UserCrudAppBackend/gradle/
-/UserCrudAppBackend/gradlew
-/UserCrudAppBackend/gradlew.bat
 
 # user-crud-app-frontend (React/Vite/Node)
 /user-crud-app-frontend/node_modules/
